@@ -14,6 +14,11 @@ public class TestApp {
         return "Hello world!";
     }
 
+    @RequestMapping("/testPage")
+    String testPage(){
+        return "This is a test page";
+    }
+
     public static void main(String[] args){
         SpringApplication.run(TestApp.class, args);
     }
