@@ -40,13 +40,18 @@ public class TestApp { ;
 
     @RequestMapping("/dbTest")
     String dbTest(){
-        try (Connection dbC = this.test.getConnection(); Statement st = dbC.createStatement();) {
+        try (Connection dbC = this.test.getConnection(); Statement st = dbC.createStatement()) {
             st.setQueryTimeout(30);
             st.executeUpdate("DROP TABLE IF EXISTS person");
             st.executeUpdate("CREATE TABLE person (id integer, name string)");
             st.executeUpdate("INSERT INTO person values(1, 'shiina mahiru')");
             st.executeUpdate("INSERT INTO person values(2, 'shiina kochiya')");
-            return "SQL test success, check database";
+            ResultSet rs = st.executeQuery("SELECT * FROM person");
+            StringBuilder s = new StringBuilder("SQL test success.\n");
+            while (rs.next()) {
+                s.append(String.format("id = %d, name=%s\n", rs.getInt("id"), rs.getString("name")));
+            }
+            return s.toString();
         }
         catch (SQLException e){
             e.printStackTrace(System.err);
@@ -54,7 +59,7 @@ public class TestApp { ;
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         SpringApplication.run(TestApp.class, args);
     }
 }
